@@ -107,14 +107,14 @@ def main():
                 print("User registered and account opened succesfully!")
 
                 que = input("Do you want to return to main menu? (Y/N) --> ")
-                if que == "Y":
+                if que.upper() == "Y":
                     
                     load(1)
                     main()
-                elif que == "N":
-                    pass
+                elif que.upper() == "N":
+                    print("\nThank You!")
                 else:
-                    raise ValueError
+                    print("\nThank You!")
 
         except ValueError:
             print("Invalid Value Entered!")
@@ -294,10 +294,10 @@ def main():
             print()
 
             que = input("Do you want to return to main menu? (Y/N) --> ")
-            if que == "Y":
+            if que.upper() == "Y":
                 load(1)
                 main()
-            elif que == "N":
+            elif que.upper() == "N":
                 print("\nThank You")
             else:
                 print("\nThank You")
