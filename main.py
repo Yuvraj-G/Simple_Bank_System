@@ -103,6 +103,7 @@ def main():
                 crsr.execute(query,(id,name,age,gender)) # Personal Details Added
                 crsr.execute(q,(id,acc,type,balance,pin)) # Account created
 
+                cnx.commit()
                 print("User registered and account opened succesfully!")
 
                 que = input("Do you want to return to main menu? (Y/N) --> ")
@@ -120,7 +121,7 @@ def main():
             main()
         
         finally:
-            cnx.commit()
+            
             cnx.close()
             
             print("Thank You")
