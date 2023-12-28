@@ -22,7 +22,7 @@ def main():
     entry = input("1/2/3 --> ")
     
     def check(id):
-        load(2)
+        load(1)
         crsr = cnx.cursor()
         query = "SELECT * FROM personal WHERE Aadhar_No = %s"
         crsr.execute(query,(id,))
@@ -34,7 +34,7 @@ def main():
             return False
 
     def new():
-        load(2)
+        load(1)
         crsr = cnx.cursor()
         try:
             id = input("Enter your aadhar number --> ")
@@ -46,7 +46,7 @@ def main():
             if check(int(id)): #Checking If User exists, using int() so that user doesn't enter alphanumeric value
                 print("You already have an account associated with this aadhar number.")
                 print("Returning to main menu")
-                load(2)
+                load(1)
             else:   #Registering New User
                 
                 #Taking inputs
@@ -103,18 +103,15 @@ def main():
                 crsr.execute(query,(id,name,age,gender)) # Personal Details Added
                 crsr.execute(q,(id,acc,type,balance,pin)) # Account created
 
+                a = time.localtime()
+                date = time.strftime("%Y-%m-%d" , a )
+
+                qu = "INSERT INTO transactions VALUES(%s,%s,%s,%s)"
+                crsr.execute(qu,(date,acc,"Deposit",balance))
+
                 cnx.commit()
                 print("User registered and account opened succesfully!")
 
-                que = input("Do you want to return to main menu? (Y/N) --> ")
-                if que.upper() == "Y":
-                    
-                    load(1)
-                    main()
-                elif que.upper() == "N":
-                    print("\nThank You!")
-                else:
-                    print("\nThank You!")
 
         except ValueError:
             print("Invalid Value Entered!")
@@ -124,14 +121,29 @@ def main():
             
             cnx.close()
             
-            print("Thank You")
-            time.sleep(10)
+            print()
+
+            que = input("Do you want to return to main menu? (Y/N) --> ")
+            if que.upper() == "Y":
+                load(1)
+                main()
+            elif que.upper() == "N":
+                print("\nThank You")
+                time.sleep(1)
+                print("\nExiting....")
+                time.sleep(5)
+            else:
+                print("\nThank You")
+                time.sleep(1)
+                print("\nExiting....")
+                time.sleep(5)
+
     
     
 
 
     def logged(rec):
-        load(2)
+        load(1)
         print()
         print("What would you like to do?")
         print("1)Balance Enquiry\n2)Deposit Money\n3)Withdraw Money\n4)Terminate my account\n5)See transaction history\n6)Back to main menu")
@@ -140,7 +152,7 @@ def main():
         print()
 
         def delete(rec):
-            load(2)
+            load(1)
             crsr = cnx.cursor()
             print("Are you sure you want to terminate your account?")
             print("This action cannot be undone.")
@@ -151,8 +163,11 @@ def main():
                 pin = int(input("Enter your 4 digit PIN --> "))
                 if rec[0][4] == pin:
                     print("Terminating Account!")
-                    crsr.execute("DELETE FROM accounts WHERE Aadhar_No = %s",(rec[0][0],))
                     crsr.execute("DELETE FROM personal WHERE Aadhar_No = %s",(rec[0][0],))
+                    crsr.execute("DELETE FROM accounts WHERE Aadhar_No = %s",(rec[0][0],))
+                    crsr.execute("DELETE FROM transactions WHERE Account_No = %s",(rec[0][1],))
+
+
                 else:
                     print("Invalid PIN entered.")
                     print("Returning to previous menu.")
@@ -166,7 +181,7 @@ def main():
                 raise ValueError
                 
         def deposit(rec):
-            load(2)
+            load(1)
             crsr = cnx.cursor()
             amount = int(input("Enter amount to be deposited --> "))
             a = time.localtime()
@@ -179,7 +194,7 @@ def main():
             print("Amount succesfully deposited")
 
         def withdraw(rec):
-            load(2)
+            load(1)
             crsr = cnx.cursor()
             amount = int(input("Enter amount to be withdrawed --> "))
 
@@ -205,7 +220,7 @@ def main():
                 main()
         
         def transaction(rec):
-            load(2)
+            load(1)
             crsr = cnx.cursor()
             pin = int(input("Confirm your 4 digit PIN --> "))
             if rec[0][4] == pin:
@@ -221,7 +236,7 @@ def main():
                         if row[2] == "Withdraw":
                             print(f"{crsr.rowcount}\t{row[0]}\t{row[2]}\t-{row[3]}\t")
                         else:
-                            print(f"{crsr.rowcount}\t{row[0]}\t{row[2]} \t{row[3]}\t")
+                            print(f"{crsr.rowcount}\t{row[0]}\t{row[2]} \t+{row[3]}\t")
                         row = crsr.fetchone()
             else:
                 print("Incorrect PIN entered.")
@@ -229,7 +244,7 @@ def main():
                 main()
 
         def display(rec):
-            load(2)
+            load(1)
             crsr = cnx.cursor()
             query = "SELECT P.Aadhar_No, Name, Account_No, Account_Type, Balance FROM personal P, accounts A WHERE P.Aadhar_No = A.Aadhar_No AND P.Aadhar_No = %s"
             crsr.execute(query,(rec[0][0],))
@@ -254,7 +269,7 @@ def main():
             main()
 
     def exist():
-        load(2)
+        load(1)
         crsr = cnx.cursor()
         try:
             id = input("Enter your aadhar number --> ")
@@ -266,7 +281,7 @@ def main():
             if not check(int(id)): #Checking If User exists, using int() so that user doesn't enter alphanumeric value
                 print("You don't have an account associated with this aadhar number.")
                 print("Returning to main menu")
-                load(2)
+                load(1)
             
             else:   #Logging in
                 query = "SELECT * FROM accounts WHERE Aadhar_No = %s"
@@ -290,7 +305,7 @@ def main():
             cnx.commit()
             cnx.close()
 
-            print("\nThank You")
+            
             print()
 
             que = input("Do you want to return to main menu? (Y/N) --> ")
@@ -299,10 +314,14 @@ def main():
                 main()
             elif que.upper() == "N":
                 print("\nThank You")
+                time.sleep(1)
+                print("\nExiting....")
+                time.sleep(5)
             else:
                 print("\nThank You")
-
-            time.sleep(10)
+                time.sleep(1)
+                print("\nExiting....")
+                time.sleep(5)
 
     if entry == "1" :
         new()

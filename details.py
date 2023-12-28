@@ -23,5 +23,4 @@ database = "bank"
 #     Date DATE NOT NULL,
 #     Account_No BIGINT NOT NULL,
 #     Transaction_Type VARCHAR(10) NOT NULL,
-#     Amount INT NOT NULL,
-#     FOREIGN KEY (Account_No) REFERENCES accounts(Account_No));
+#     Amount INT NOT NULL);
